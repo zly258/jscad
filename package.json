@@ -1,0 +1,14 @@
+{
+  "name": "jscad",
+  "version": "0.1.0",
+  "description": "Lightweight 2D/3D CAD modeling engine in JavaScript",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node ./tests/basic.test.js"
+  },
+  "license": "MIT"
+}

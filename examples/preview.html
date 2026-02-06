@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JS CAD 2D/3D 预览示例</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+      }
+      canvas {
+        border: 1px solid #ccc;
+        background: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JS CAD 2D/3D 预览示例</h1>
+    <p>左侧为 2D 路径渲染，右侧为 3D 线框渲染。</p>
+    <div class="grid">
+      <div>
+        <h2>2D Scene</h2>
+        <canvas id="canvas2d" width="320" height="240"></canvas>
+      </div>
+      <div>
+        <h2>3D Scene</h2>
+        <canvas id="canvas3d" width="320" height="240"></canvas>
+      </div>
+    </div>
+    <script type="module" src="./preview.js"></script>
+  </body>
+</html>
