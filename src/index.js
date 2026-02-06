@@ -4,7 +4,10 @@ export {
   CompositeShape2D,
   rectangle,
   circle,
+  ellipse,
+  roundedRectangle,
   polygon,
+  star,
   union2d,
   subtract2d,
   intersect2d
@@ -15,6 +18,7 @@ export {
   box,
   sphere,
   cylinder,
+  cone,
   extrude,
   union,
   subtract,

@@ -99,6 +99,22 @@ export class Shape3D {
         mesh.faces.push([topCenter, i * 2 + 1, next * 2 + 1]);
         mesh.faces.push([bottomCenter, next * 2, i * 2]);
       }
+    } else if (this.type === 'cone') {
+      const { radius, height } = this.params;
+      const half = height / 2;
+      for (let i = 0; i < segments; i += 1) {
+        const theta = (2 * Math.PI * i) / segments;
+        mesh.vertices.push(new Vector3(Math.cos(theta) * radius, Math.sin(theta) * radius, -half));
+      }
+      const apexIndex = mesh.vertices.length;
+      mesh.vertices.push(new Vector3(0, 0, half));
+      const baseCenter = mesh.vertices.length;
+      mesh.vertices.push(new Vector3(0, 0, -half));
+      for (let i = 0; i < segments; i += 1) {
+        const next = (i + 1) % segments;
+        mesh.faces.push([i, next, apexIndex]);
+        mesh.faces.push([baseCenter, next, i]);
+      }
     } else if (this.type === 'extrude') {
       const { shape, height } = this.params;
       const path = shape.toPath(segments);
@@ -152,6 +168,7 @@ export class CompositeShape {
 export const box = (width, height, depth) => new Shape3D('box', { width, height, depth });
 export const sphere = (radius) => new Shape3D('sphere', { radius });
 export const cylinder = (radius, height) => new Shape3D('cylinder', { radius, height });
+export const cone = (radius, height) => new Shape3D('cone', { radius, height });
 export const extrude = (shape, height) => new Shape3D('extrude', { shape, height });
 
 export const union = (...shapes) => new CompositeShape('union', shapes);

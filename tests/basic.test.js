@@ -2,8 +2,11 @@ import assert from 'node:assert/strict';
 import {
   rectangle,
   circle,
+  ellipse,
+  roundedRectangle,
   extrude,
   box,
+  cone,
   union,
   Scene2D,
   Scene3D
@@ -11,17 +14,25 @@ import {
 
 const rect = rectangle(10, 20).translate(5, -5);
 const circleShape = circle(5).scale(2);
+const ellipseShape = ellipse(8, 4);
+const rounded = roundedRectangle(12, 6, 2);
 const solid = extrude(rect, 8);
 const cube = box(2, 2, 2).translate(0, 0, 1);
+const coneShape = cone(3, 6);
 
 const assembly = union(solid, cube);
 
 assert.equal(rect.toPath().length, 4);
 assert.ok(circleShape.toPath(12).length >= 12);
+assert.ok(ellipseShape.toPath(12).length >= 12);
+assert.ok(rounded.toPath(12).length >= 12);
 
 const mesh = solid.toMesh();
 assert.ok(mesh.vertices.length > 0);
 assert.ok(mesh.faces.length > 0);
+
+const coneMesh = coneShape.toMesh();
+assert.ok(coneMesh.faces.length > 0);
 
 assert.equal(assembly.toJSON().operation, 'union');
 

@@ -38,9 +38,44 @@ export class Shape2D {
         const theta = (Math.PI * 2 * i) / segments;
         points.push(new Vector2(Math.cos(theta) * radius, Math.sin(theta) * radius));
       }
+    } else if (this.type === 'ellipse') {
+      const { radiusX, radiusY } = this.params;
+      for (let i = 0; i < segments; i += 1) {
+        const theta = (Math.PI * 2 * i) / segments;
+        points.push(new Vector2(Math.cos(theta) * radiusX, Math.sin(theta) * radiusY));
+      }
+    } else if (this.type === 'rounded-rectangle') {
+      const { width, height, radius } = this.params;
+      const clampedRadius = Math.min(radius, width / 2, height / 2);
+      const cornerSegments = Math.max(4, Math.floor(segments / 4));
+      const corners = [
+        { cx: width / 2 - clampedRadius, cy: height / 2 - clampedRadius, start: 0 },
+        { cx: -width / 2 + clampedRadius, cy: height / 2 - clampedRadius, start: Math.PI / 2 },
+        { cx: -width / 2 + clampedRadius, cy: -height / 2 + clampedRadius, start: Math.PI },
+        { cx: width / 2 - clampedRadius, cy: -height / 2 + clampedRadius, start: (3 * Math.PI) / 2 }
+      ];
+      for (const corner of corners) {
+        for (let i = 0; i < cornerSegments; i += 1) {
+          const theta = corner.start + (Math.PI / 2) * (i / (cornerSegments - 1));
+          points.push(
+            new Vector2(
+              corner.cx + Math.cos(theta) * clampedRadius,
+              corner.cy + Math.sin(theta) * clampedRadius
+            )
+          );
+        }
+      }
     } else if (this.type === 'polygon') {
       for (const point of this.params.points) {
         points.push(new Vector2(point[0], point[1]));
+      }
+    } else if (this.type === 'star') {
+      const { outerRadius, innerRadius, points: pointCount } = this.params;
+      const totalPoints = pointCount * 2;
+      for (let i = 0; i < totalPoints; i += 1) {
+        const theta = (Math.PI * 2 * i) / totalPoints;
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        points.push(new Vector2(Math.cos(theta) * radius, Math.sin(theta) * radius));
       }
     }
 
@@ -76,7 +111,12 @@ export class CompositeShape2D {
 
 export const rectangle = (width, height) => new Shape2D('rectangle', { width, height });
 export const circle = (radius) => new Shape2D('circle', { radius });
+export const ellipse = (radiusX, radiusY) => new Shape2D('ellipse', { radiusX, radiusY });
+export const roundedRectangle = (width, height, radius) =>
+  new Shape2D('rounded-rectangle', { width, height, radius });
 export const polygon = (points) => new Shape2D('polygon', { points });
+export const star = (outerRadius, innerRadius, points) =>
+  new Shape2D('star', { outerRadius, innerRadius, points });
 
 export const union2d = (...shapes) => new CompositeShape2D('union', shapes);
 export const subtract2d = (base, ...cuts) => new CompositeShape2D('subtract', [base, ...cuts]);
